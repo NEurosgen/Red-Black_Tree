@@ -183,6 +183,12 @@ class RBTree {
             delete node;
             return;
         }
+        if (node->parent == NULL) {
+            root = root->right;
+            delete root->parent;
+            root->parent = NULL;
+            return;
+        }
         // Когда в удаленном узле только левый (правый) узел пуст, найдите дочерний узел удаленного узла
         if (node->left != NULL)
             child = node->left;
@@ -210,8 +216,7 @@ class RBTree {
 
             replace = node->right;
             if (replace == NULL && node->left == NULL) {
-                root->data = NULL;
-                root == NULL;
+                root = NULL;
                 
                 return;
             }
@@ -219,7 +224,7 @@ class RBTree {
                
                 root = root->left;
                 delete root->parent;
-                root->parent = NULL;
+                
                 root->color = 0;
                 return;
             }
@@ -251,13 +256,18 @@ class RBTree {
         }
         if (parent->left == node) {
             brother = parent->right;
-            if (brother == NULL) { removeFixUp(root, parent, parent->parent); return; }
+            if (brother == NULL) {
+                return;
+            }
             if (brother->color == 1)
             {
                 brother->color = 0;
                 parent->color = 1;
                 leftrotate(root, parent);
                 brother = parent->right;
+            }
+            if (brother == NULL) {
+                return;
             }
             if (brother->color = 0) {
                 if ((brother->right == NULL && brother->left == NULL) || (brother->right->color = 0 && brother->left->color == 0)) {
@@ -280,13 +290,18 @@ class RBTree {
         }
         else {
             brother = parent->left;
-
+            if (brother == NULL) {
+                return;
+            }
             if (brother->color == 1)
             {
                 brother->color = 0;
                 parent->color = 1;
                 rightrotate(root, parent);
                 brother = parent->left;
+            }
+           if (brother == NULL) {
+                return;
             }
             if (brother->color = 0) {
                 if ((brother->left == NULL && brother->right == NULL) || (brother->right->color == 0 && brother->left->color == 0)) {
@@ -307,76 +322,7 @@ class RBTree {
                 }
             }
         }
-        //Node* othernode;
-        //while ((!node) || node->color == 0 && node != root)
-        //{
-        //    if (parent->left == node)
-        //    {
-        //        othernode = parent->right;
-        //        if (othernode->color == 1)
-        //        {
-        //            othernode->color = 0;
-        //            parent->color = 1;
-        //            leftrotate(root, parent);
-        //            othernode = parent->right;
-        //        }
-        //        else
-        //        {   
-
-        //            if (!(othernode->right) || othernode->right->color == 0  )//HERE MISTAKE!!!!
-        //            {
-        //                othernode->left->color = 0;
-        //                othernode->color = 1;
-        //                rightrotate(root, othernode);
-        //                othernode = parent->right;
-        //            }
-        //            
-        //                
-        //                    othernode->color = parent->color;
-        //                    parent->color = 0;
-        //                    othernode->right->color = 0;
-        //                    leftrotate(root, parent);
-        //                    node = root;
-        //                    break;
-        //                
-        //        }
-        //    }
-        //    else
-        //    {
-        //        othernode = parent->left;
-        //        if (othernode->color == 1)
-        //        {
-        //            othernode->color = 0;
-        //            parent->color = 1;
-        //            rightrotate(root, parent);
-        //            othernode = parent->left;
-        //        }
-        //        if ((!othernode->left || othernode->left->color == 0) && (!othernode->right || othernode->right->color == 0))
-        //        {
-        //            othernode->color = 1;
-        //            node = parent;
-        //            parent = node->parent;
-        //        }
-        //        else
-        //        {
-        //            if (!(othernode->left) || othernode->left->color == 0)
-        //            {
-        //                othernode->right->color = 0;
-        //                othernode->color = 1;
-        //                leftrotate(root, othernode);
-        //                othernode = parent->left;
-        //            }
-        //            othernode->color = parent->color;
-        //            parent->color = 0;
-        //            othernode->left->color = 0;
-        //            rightrotate(root, parent);
-        //            node = root;
-        //            break;
-        //        }
-        //    }
-        //}
-        //if (node)
-        //    node->color = 0;
+        
     }
     void destory(Node*& node)
     {
@@ -415,6 +361,9 @@ class RBTree {
 public:
     void remove(T key)
     {
+        if (key == 868929) {
+            int k = 1;
+        }
         Node* deletenode = search(root, key);
         if (deletenode != NULL)
             remove(root, deletenode);
@@ -440,16 +389,18 @@ int main()
     RBTree<int> tree;
     
     auto begin = std::chrono::steady_clock::now();
+    
     for (int i = 1000000; i >=0; --i) {
-        tree.insert(i);
+        tree.insert(rand());
     }
     for (int i = 0; i < 1000000; ++i) {
-        tree.remove(i);
+        tree.remove(rand());
     }
-
+    
+    
     auto end = std::chrono::steady_clock::now();
     auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-    std::cout << "The time: " << elapsed_ms.count() << " ms\n";
+    std::cout << "the time: " << elapsed_ms.count() << " ms\n";
     
 }
 
